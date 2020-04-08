@@ -343,7 +343,7 @@ class RecordImporter(Component):
                 continue
 
         # update report
-        self._do_report()
+        # self._do_report() # comment because we won't be able to run multiple import in same time
 
         # log chunk finished
         msg = " ".join(
