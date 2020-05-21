@@ -319,7 +319,7 @@ class RecordImporter(Component):
                 values = {}
                 self.tracker.log_error(values, line, odoo_record, message=err)
                 if self._break_on_error:
-                    raise
+                    raise err
                 continue
 
             # handle forced skipping
@@ -339,11 +339,11 @@ class RecordImporter(Component):
             except Exception as err:
                 self.tracker.log_error(values, line, odoo_record, message=err)
                 if self._break_on_error:
-                    raise
+                    raise err
                 continue
 
         # update report
-        self._do_report()
+        # self._do_report() # comment because we won't be able to run multiple import in same time
 
         # log chunk finished
         msg = " ".join(
