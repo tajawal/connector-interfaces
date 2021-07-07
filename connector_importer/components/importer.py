@@ -342,8 +342,9 @@ class RecordImporter(Component):
                     raise err
                 continue
 
-        # update report
-        # self._do_report() # comment because we won't be able to run multiple import in same time
+        # added to prevent concurrency update issue that happens inside below do_update method for report_data
+        self.advisory_lock_or_retry(f"recordset_id-{self.recordset.id}_report_data")
+        self._do_report()
 
         # log chunk finished
         msg = " ".join(
