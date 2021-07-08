@@ -304,6 +304,9 @@ class RecordImporter(Component):
             logger.error(msg)
             return
 
+        # added to prevent concurrency update issue that happens inside below do_update method for report_data
+        self.advisory_lock_or_retry(f"{self.record.recordset_id}-report_data")
+
         self._init_importer(self.record.recordset_id)
         for line in self._record_lines():
             line = self.prepare_line(line)
@@ -342,9 +345,7 @@ class RecordImporter(Component):
                     raise err
                 continue
 
-        # added to prevent concurrency update issue that happens inside below do_update method for report_data
-        self.advisory_lock_or_retry(f"recordset_id-{self.recordset.id}_report_data")
-        self._do_report()
+        self._do_report()  # throw an error with big files if they cause of concurrency but we handled by above lock
 
         # log chunk finished
         msg = " ".join(
